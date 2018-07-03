@@ -26,7 +26,7 @@ contract firstbuy {
     //function to handle the first part of the transaction: converts 1% to creds, sends
     //advanced payment to vendor, keeps remaining amount in escrow (currently in contract)
     //@param _recepient: the address of the seller
-    //@_credit_ceiling: credit of seller
+    //@param _credit_ceiling: credit of seller
     function first_payment (address _recepient, uint _credit_ceiling) public payable{
       convert_to_creds(SafeMath.div(msg.value,100));
       uint amount = SafeMath.div(SafeMath.mul(msg.value, 99), 100);
