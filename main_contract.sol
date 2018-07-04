@@ -5,7 +5,10 @@ import { SafeMath } from "https://github.com/OpenZeppelin/openzeppelin-solidity/
 
 contract firstbuy {
     
+    //empty constructor marked as payable
+    constructor () public payable{
     
+    }
     address verify_address;//will be set to constant address of account owned be verify
     uint ether_from_fallback = 0;
     //fallback function needed to be implemented to recive ether
