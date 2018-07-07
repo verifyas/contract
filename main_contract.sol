@@ -31,8 +31,9 @@ contract firstbuy {
     //@param _recepient: the address of the seller
     //@param _credit_ceiling: credit of seller
     function first_payment (address _recepient, uint _credit_ceiling) public payable{
-      convert_to_creds(SafeMath.div(msg.value,100));
-      uint amount = SafeMath.div(SafeMath.mul(msg.value, 99), 100);
+      uint cred_amount = SafeMath.div(msg.value,100);
+      convert_to_creds(cred_amount);
+      uint amount = SafeMath.sub(msg.amount,cred_amount );
         if (amount<=_credit_ceiling)
         _recepient.transfer(amount);
         else if (_credit_ceiling<amount){
