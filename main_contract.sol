@@ -33,7 +33,7 @@ contract firstbuy {
     function first_payment (address _recepient, uint _credit_ceiling) public payable{
       uint cred_amount = SafeMath.div(msg.value,100);
       convert_to_creds(cred_amount);
-      uint amount = SafeMath.sub(msg.amount,cred_amount );
+      uint amount = SafeMath.sub(msg.value,cred_amount );
         if (amount<=_credit_ceiling)
         _recepient.transfer(amount);
         else if (_credit_ceiling<amount){
