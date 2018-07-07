@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import "https://github.com/verifyas/contract/blob/master/contracts/CREDToken.sol";
-import { SafeMath } from "https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol";
+import "https://github.com/verifyas/contract/contracts/CREDToken.sol";
+import { SafeMath } from "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract firstbuy {
     
