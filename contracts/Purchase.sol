@@ -6,7 +6,6 @@ import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 contract Purchase {
 
     address public seller;
-    address public buyer;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
     uint collectedEther = 0;
@@ -20,7 +19,6 @@ contract Purchase {
     }
 
     constructor (address addressSeller) public payable {
-        buyer = msg.sender;
         seller = addressSeller;
     }
 
@@ -42,7 +40,7 @@ contract Purchase {
         uint payment = SafeMath.sub(msg.value, transactionFee);
 
         transactionFee = toCredToken(transactionFee);
-        // TODO: Transfer transaction fee to Verify account
+        verify.transfer(transactionFee);
 
         if (payment <= creditCeiling) {
             seller.transfer(payment);
@@ -51,7 +49,7 @@ contract Purchase {
                 seller.transfer(creditCeiling);
             }
             uint moneyInEscrow = toDaiToken(SafeMath.sub(payment, creditCeiling));
-            // TODO: Transfer escrow money to Verify escrow account
+            verifyEscrow.transfer(moneyInEscrow);
         }
     }
 
