@@ -9,6 +9,7 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
+    uint private transactionValue = 0;
     uint private moneyInEscrow = 0;
     uint private collectedEther = 0;
 
@@ -24,6 +25,14 @@ contract Purchase {
         require(
             msg.sender == buyer,
             "Only the buyer can call this function."
+        );
+        _;
+    }
+
+    modifier onlySeller {
+        require(
+            msg.sender == seller,
+            "Only the seller can call this function."
         );
         _;
     }
@@ -66,6 +75,10 @@ contract Purchase {
     function sendFundsToSeller () public payable onlyVerify {
         seller.transfer(moneyInEscrow);
         moneyInEscrow = 0;
+    }
+
+    function refund () public payable onlySeller {
+        buyer.transfer()
     }
 
     function getTransactionFee ()
