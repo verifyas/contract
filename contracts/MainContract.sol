@@ -33,21 +33,30 @@ contract MainContract {
 
     function sendFundsToVerify (address addressSeller, uint creditCeiling) public payable {
         uint transactionFee = SafeMath.div(msg.value, 100);
-        toCredToken(transactionFee);
         uint payment = SafeMath.sub(msg.value, transactionFee);
+
+        transactionFee = toCredToken(transactionFee);
+        // TODO: Transfer transaction fee to Verify
+
         if (payment <= creditCeiling) {
             addressSeller.transfer(payment);
         } else if (creditCeiling < payment) {
             if (creditCeiling > 0) {
                 addressSeller.transfer(creditCeiling);
             }
-            toDaiToken(SafeMath.sub(payment, creditCeiling));
+            uint moneyInEscrow = toDaiToken(SafeMath.sub(payment, creditCeiling));
         }
     }
 
-    function toDaiToken (uint amountInEther) private {
+    function toDaiToken (uint amountInEther)
+        private
+        returns (uint amountInDai)
+    {
     }
 
-    function toCredToken (uint amountInEther) private {
+    function toCredToken (uint amountInEther)
+        private
+        returns (uint amountInCred)
+    {
     }
 }
