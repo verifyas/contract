@@ -9,6 +9,7 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
+    uint private creditCeiling = 0;
     uint private payment = 0;
     uint private moneyInEscrow = 0;
     uint private collectedEther = 0;
@@ -53,8 +54,11 @@ contract Purchase {
         }
     }
 
-    // TODO: Get creditCeiling from Verify server instead of from buyer
-    function sendFundsToVerify (uint creditCeiling) public payable onlyBuyer {
+    function setCreditCeiling (uint ceiling) external onlyVerify {
+        creditCeiling = ceiling;
+    }
+
+    function sendFundsToVerify () public payable onlyBuyer {
         uint transactionFee = getTransactionFee();
         payment = SafeMath.sub(msg.value, transactionFee);
 
