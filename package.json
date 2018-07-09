@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme",
   "dependencies": {
-    "openzeppelin-solidity": "1.10.0"
+    "openzeppelin-solidity": "1.10.0",
+    "solc": "^0.4.24"
   }
 }
