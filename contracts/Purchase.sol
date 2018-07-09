@@ -36,7 +36,7 @@ contract Purchase {
 
     // TODO: Get creditCeiling from Verify server instead of from buyer
     function sendFundsToVerify (uint creditCeiling) public payable {
-        uint transactionFee = SafeMath.div(msg.value, 100);
+        uint transactionFee = getTransactionFee();
         uint payment = SafeMath.sub(msg.value, transactionFee);
 
         transactionFee = toCredToken(transactionFee);
@@ -51,6 +51,13 @@ contract Purchase {
             uint moneyInEscrow = toDaiToken(SafeMath.sub(payment, creditCeiling));
             verifyEscrow.transfer(moneyInEscrow);
         }
+    }
+
+    function getTransactionFee ()
+        private
+        returns (uint transactionFee)
+    {
+        return SafeMath.div(msg.value, 100);
     }
 
     function toDaiToken (uint amountInEther)
