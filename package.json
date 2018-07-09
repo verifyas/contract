@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/verifyas/ethereum-smart-contract/issues"
   },
-  "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme"
+  "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme",
+  "dependencies": {
+    "zeppelin-solidity": "^1.10.0"
+  }
 }
