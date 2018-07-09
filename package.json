@@ -4,7 +4,8 @@
   "description": "Smart contracts for the Ethereum whitepaper project.",
   "main": "main_contract.sol",
   "dependencies": {
-    "solc": "^0.4.24"
+    "solc": "^0.4.24",
+    "truffle": "^4.1.13"
   },
   "devDependencies": {},
   "scripts": {
