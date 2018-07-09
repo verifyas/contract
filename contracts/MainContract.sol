@@ -5,18 +5,25 @@ import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract MainContract {
 
-    constructor () public payable {
+    address addressVerify; // TODO: Set to Verify Ethereum address
+    uint collectedEther = 0;
+
+    modifier onlyVerify {
+        require(
+            msg.sender == addressVerify,
+            "Only Verify can call this function."
+        );
+        _;
     }
 
-    address addressVerify; // TODO: Set to Verify Ethereum address
-
-    uint collectedEther = 0;
+    constructor () public payable {
+    }
 
     function() external payable {
         collectedEther = SafeMath.add(collectedEther, msg.value); 
     }
 
-    function collect () external {
+    function collect () external onlyVerify {
         if (collectedEther > 0) {
             uint amount = collectedEther;
             collectedEther = 0;
