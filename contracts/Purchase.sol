@@ -9,8 +9,8 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
-    uint moneyInEscrow = 0;
-    uint collectedEther = 0;
+    uint private moneyInEscrow = 0;
+    uint private collectedEther = 0;
 
     modifier onlyVerify {
         require(
@@ -39,9 +39,8 @@ contract Purchase {
 
     function collect () external onlyVerify {
         if (collectedEther > 0) {
-            uint amount = collectedEther;
+            verify.transfer(collectedEther);
             collectedEther = 0;
-            verify.transfer(amount);
         }
     }
 
@@ -64,7 +63,10 @@ contract Purchase {
         }
     }
 
-    function sendFundsToSeller (uint )
+    function sendFundsToSeller () public payable onlyVerify {
+        seller.transfer(moneyInEscrow);
+        moneyInEscrow = 0;
+    }
 
     function getTransactionFee ()
         private
