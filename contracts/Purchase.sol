@@ -3,7 +3,7 @@ pragma solidity ^0.4.22;
 //import 'https://github.com/verifyas/contract/contracts/CREDToken.sol';
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
-contract MainContract {
+contract Purchase {
 
     address addressVerify; // TODO: Set to Verify Ethereum address
     uint collectedEther = 0;
