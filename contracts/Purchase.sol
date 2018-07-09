@@ -58,7 +58,12 @@ contract Purchase {
         creditCeiling = ceiling;
     }
 
-    function sendFundsToVerify () public payable onlyBuyer {
+    function sendFundsToVerify ()
+        public
+        payable
+        onlyBuyer
+        returns (bool completed)
+    {
         uint transactionFee = getTransactionFee();
         payment = SafeMath.sub(msg.value, transactionFee);
 
@@ -74,16 +79,29 @@ contract Purchase {
             moneyInEscrow = moneyInEscrow + toDaiToken(SafeMath.sub(payment, creditCeiling));
             verifyEscrow.transfer(moneyInEscrow);
         }
+        return true;
     }
 
-    function sendFundsToSeller () public payable onlyVerify {
+    function sendFundsToSeller ()
+        public
+        payable
+        onlyVerify
+        returns (bool completed)
+    {
         seller.transfer(moneyInEscrow);
         moneyInEscrow = 0;
+        return true;
     }
 
     // Note: Transaction fee is non-refundable.
-    function refund () public payable onlySeller {
+    function refund ()
+        public
+        payable
+        onlySeller
+        returns (bool completed)
+    {
         buyer.transfer(payment);
+        return true;
     }
 
     // Note: For v1, we will only take 1% of the transaction as 'insurance' fee.
