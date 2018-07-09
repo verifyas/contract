@@ -1,0 +1,23 @@
+{
+  "name": "ethereum-smart-contract",
+  "version": "1.0.0",
+  "description": "Smart contracts for the Ethereum whitepaper project.",
+  "main": "main_contract.sol",
+  "dependencies": {
+    "solc": "^0.4.24"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/verifyas/ethereum-smart-contract.git"
+  },
+  "author": "Richard Grannis-Vu, Hassan Fahmy, Kivalu Ramanlal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/verifyas/ethereum-smart-contract/issues"
+  },
+  "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme"
+}
