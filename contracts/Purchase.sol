@@ -9,6 +9,7 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
+    uint private payment = 0;
     uint private moneyInEscrow = 0;
     uint private collectedEther = 0;
 
@@ -24,6 +25,14 @@ contract Purchase {
         require(
             msg.sender == buyer,
             "Only the buyer can call this function."
+        );
+        _;
+    }
+
+    modifier onlySeller {
+        require(
+            msg.sender == seller,
+            "Only the seller can call this function."
         );
         _;
     }
@@ -47,7 +56,7 @@ contract Purchase {
     // TODO: Get creditCeiling from Verify server instead of from buyer
     function sendFundsToVerify (uint creditCeiling) public payable onlyBuyer {
         uint transactionFee = getTransactionFee();
-        uint payment = SafeMath.sub(msg.value, transactionFee);
+        payment = SafeMath.sub(msg.value, transactionFee);
 
         transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
@@ -68,6 +77,14 @@ contract Purchase {
         moneyInEscrow = 0;
     }
 
+    // Note: Transaction fee is non-refundable.
+    function refund () public payable onlySeller {
+        buyer.transfer(payment);
+    }
+
+    // Note: For v1, we will only take 1% of the transaction as 'insurance' fee.
+    // In the future, we will use an algorithm to calculate the 'insurance' fee,
+    // taking into account the reputation of both parties involved.
     function getTransactionFee ()
         private
         returns (uint transactionFee)
