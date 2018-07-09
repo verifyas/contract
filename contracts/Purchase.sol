@@ -9,6 +9,7 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
+    uint private creditCeiling = 0;
     uint private payment = 0;
     uint private moneyInEscrow = 0;
     uint private collectedEther = 0;
@@ -53,8 +54,16 @@ contract Purchase {
         }
     }
 
-    // TODO: Get creditCeiling from Verify server instead of from buyer
-    function sendFundsToVerify (uint creditCeiling) public payable onlyBuyer {
+    function setCreditCeiling (uint ceiling) external onlyVerify {
+        creditCeiling = ceiling;
+    }
+
+    function sendFundsToVerify ()
+        public
+        payable
+        onlyBuyer
+        returns (bool completed)
+    {
         uint transactionFee = getTransactionFee();
         payment = SafeMath.sub(msg.value, transactionFee);
 
@@ -70,16 +79,29 @@ contract Purchase {
             moneyInEscrow = moneyInEscrow + toDaiToken(SafeMath.sub(payment, creditCeiling));
             verifyEscrow.transfer(moneyInEscrow);
         }
+        return true;
     }
 
-    function sendFundsToSeller () public payable onlyVerify {
+    function sendFundsToSeller ()
+        public
+        payable
+        onlyVerify
+        returns (bool completed)
+    {
         seller.transfer(moneyInEscrow);
         moneyInEscrow = 0;
+        return true;
     }
 
     // Note: Transaction fee is non-refundable.
-    function refund () public payable onlySeller {
+    function refund ()
+        public
+        payable
+        onlySeller
+        returns (bool completed)
+    {
         buyer.transfer(payment);
+        return true;
     }
 
     // Note: For v1, we will only take 1% of the transaction as 'insurance' fee.
