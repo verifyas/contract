@@ -1,4 +1,4 @@
-var Purchase = artifacts.require('./Purchase.sol')
+var Purchase = artifacts.require('Purchase')
 
 contract('Purchase', function () {
   
