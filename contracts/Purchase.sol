@@ -10,7 +10,8 @@ contract Purchase {
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
     uint private creditCeiling = 0;
-    uint private payment = 0;
+    uint private price = 0;
+    uint private paid = 0;
     uint private moneyInEscrow = 0;
     uint private collectedEther = 0;
 
@@ -38,9 +39,10 @@ contract Purchase {
         _;
     }
 
-    constructor (address addressSeller) public payable {
+    constructor (address addressSeller, uint p) public payable {
         buyer = msg.sender;
         seller = addressSeller;
+        price = p;
     }
 
     function() external payable {
@@ -61,20 +63,25 @@ contract Purchase {
     function sendFundsToVerify ()
         public
         payable
-        onlyBuyer
         returns (bool completed)
     {
         uint transactionFee = getTransactionFee();
-        payment = SafeMath.sub(msg.value, transactionFee);
+        uint payment = SafeMath.sub(msg.value, transactionFee);
+
+        if (payment < price) {
+            return false;
+        }
 
         transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
 
         if (payment <= creditCeiling) {
             seller.transfer(payment);
+            paid = paid + payment;
         } else if (creditCeiling < payment) {
             if (creditCeiling > 0) {
                 seller.transfer(creditCeiling);
+                paid = paid + creditCeiling;
             }
             moneyInEscrow = moneyInEscrow + toDaiToken(SafeMath.sub(payment, creditCeiling));
             verifyEscrow.transfer(moneyInEscrow);
@@ -89,18 +96,31 @@ contract Purchase {
         returns (bool completed)
     {
         seller.transfer(moneyInEscrow);
+        paid = paid + moneyInEscrow;
         moneyInEscrow = 0;
         return true;
     }
 
     // Note: Transaction fee is non-refundable.
-    function refund ()
+    function refundFromSeller ()
         public
         payable
         onlySeller
         returns (bool completed)
     {
-        buyer.transfer(payment);
+        buyer.transfer(paid);
+        paid = 0;
+        return true;
+    }
+
+    function refundFromVerify ()
+        public
+        payable
+        onlyVerify
+        returns (bool completed)
+    {
+        buyer.transfer(moneyInEscrow);
+        moneyInEscrow = 0;
         return true;
     }
 
