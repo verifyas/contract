@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
     "ganache-cli": "^6.1.6",
     "openzeppelin-solidity": "1.10.0",
     "solc": "^0.4.24"
