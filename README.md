@@ -4,7 +4,9 @@ The goal of this project is to provide the smart contract(s) that will be used b
 
 # Code Structure
 
-The contracts are stored in the folder marked 'contracts'. In the folder, there are currently two files - one named Migration.sol and one named Purchase.sol. Migration.sol is generated and used by Truffle. Purchase.sol is the smart contract currently under development.
+The contracts are stored in the folder marked 'contracts'. In the folder, there are currently two files - one named Migration.sol and one named Purchase.sol. Migration.sol is generated and internally used by Truffle. Purchase.sol is the smart contract currently under development.
+
+The migrations are internally used by Truffle to deploy the contracts to the network.
 
 Unit tests are stored in the folder marked 'tests'. They follow the Truffle testing specification and are run by Truffle.
 
@@ -25,3 +27,16 @@ A couple important things to note from the guidelines:
    * public
    * internal
    * private
+
+# Getting Started
+
+ 1. Download or clone the repository.
+ 2. Navigate into the root directory of the project.
+ 3. Run the command 'npm install'
+ 
+## Testing
+
+To test the smart contracts, run the command 'truffle test' from the root directory of the project. This does three things:
+ 1. Compiles the smart contracts.
+ 2. Runs the migrations to deploy the contracts to the network. For testing purposes, we'll use a test network, in this case testrpc. Running on the main Ethereum network would be very slow and expensive.
+ 3. Runs the tests against the smart contracts deployed on the network.
