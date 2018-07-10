@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme",
   "dependencies": {
-    "ethereumjs-testrpc": "^6.0.3",
+    "ganache-cli": "^6.1.6",
     "openzeppelin-solidity": "1.10.0",
     "solc": "^0.4.24"
   }
