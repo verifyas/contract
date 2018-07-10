@@ -16,9 +16,22 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
 
   it('is able to accept ether', async function () {
     await purchase.sendTransaction({ value: 1e+18, from: donor })
-    
+
     var purchaseAddress = await purchase.address
     assert.equal(web3.eth.getBalance(purchaseAddress).toNumber(), 1e+18)
+  })
+
+  it('permit verify to receive fallback ether', async function () {
+    await purchase.sendTransaction({ value: 1e+18, from: donor, gas: "220000" })
+    var verifyInitialBalance = web3.eth.getBalance(verify).toNumber()
+
+    var purchaseAddress = await purchase.address
+    assert.equal(web3.eth.getBalance(purchaseAddress).toNumber(), 1e+18)
+    
+    await purchase.collect()
+    
+    assert.equal(web3.eth.getBalance(purchaseAddress).toNumber(), 0)
+    assert.isAbove(web3.eth.getBalance(verify).toNumber(), verifyInitialBalance)
   })
 
   /*it("should send funds to Verify and Verify escrow", function () {

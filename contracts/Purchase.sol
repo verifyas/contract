@@ -13,7 +13,6 @@ contract Purchase {
     uint private price = 0;
     uint private paid = 0;
     uint private moneyInEscrow = 0;
-    uint private collectedEther = 0;
 
     modifier onlyVerify {
         require(
@@ -49,15 +48,12 @@ contract Purchase {
         verifyEscrow = addressVerifyEscrow;
     }
 
-    function() external payable {
-        collectedEther = SafeMath.add(collectedEther, msg.value); 
+    // Fallback function to accept ETH into contract.
+    function() payable {
     }
 
-    function collect () external onlyVerify {
-        if (collectedEther > 0) {
-            verify.transfer(collectedEther);
-            collectedEther = 0;
-        }
+    function collect () public {
+        verify.transfer(this.balance);
     }
 
     function setCreditCeiling (uint ceiling) external onlyVerify {
