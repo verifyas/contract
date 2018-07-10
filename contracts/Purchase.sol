@@ -49,11 +49,11 @@ contract Purchase {
     }
 
     // Fallback function to accept ETH into contract.
-    function() payable {
+    function() public payable {
     }
 
     function collect () public {
-        verify.transfer(this.balance);
+        verify.transfer(address(this).balance);
     }
 
     function setCreditCeiling (uint ceiling) external onlyVerify {
