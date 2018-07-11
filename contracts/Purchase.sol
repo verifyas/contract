@@ -22,6 +22,14 @@ contract Purchase {
         _;
     }
 
+    modifier onlyVerifyEscrow {
+        require(
+            msg.sender == verifyEscrow,
+            "Only the escrow account of Verify can call this function."
+        );
+        _;
+    }
+
     modifier onlyBuyer {
         require(
             msg.sender == buyer,
@@ -63,6 +71,7 @@ contract Purchase {
     function sendFundsToVerify ()
         public
         payable
+        onlyBuyer
         returns (bool completed)
     {
         uint transactionFee = getTransactionFee();
@@ -83,7 +92,7 @@ contract Purchase {
                 seller.transfer(creditCeiling);
                 paid = paid + creditCeiling;
             }
-            moneyInEscrow = moneyInEscrow + toDaiToken(SafeMath.sub(payment, creditCeiling));
+            moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
             verifyEscrow.transfer(moneyInEscrow);
         }
         return true;
@@ -92,7 +101,7 @@ contract Purchase {
     function sendFundsToSeller ()
         public
         payable
-        onlyVerify
+        onlyVerifyEscrow
         returns (bool completed)
     {
         seller.transfer(moneyInEscrow);
@@ -116,7 +125,7 @@ contract Purchase {
     function refundFromVerify ()
         public
         payable
-        onlyVerify
+        onlyVerifyEscrow
         returns (bool completed)
     {
         buyer.transfer(moneyInEscrow);
