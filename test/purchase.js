@@ -1,3 +1,6 @@
+var Web3Beta = require('web3')
+var web3beta = new Web3Beta()
+
 var Purchase = artifacts.require('Purchase')
 
 contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
@@ -33,12 +36,20 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
     assert.equal(web3.eth.getBalance(purchaseAddress).toNumber(), 0)
     assert.isAbove(web3.eth.getBalance(verify).toNumber(), verifyInitialBalance)
   })
+  
+  it('buyer should send funds to Verify', async function () {
+    var verifyInitialBalance = web3.eth.getBalance(verify).toNumber()
 
-  /*it("should send funds to Verify and Verify escrow", function () {
-    /*return Purchase.deployed().then(function (instance) {
-      return instance.sendFundsToVerify()
-    }).then(function (success) {
-      assert.equal(success, true, "Call to sendFundsToVerify() failed with response: " + success)
-    })
-  })*/
+    await purchase.sendFundsToVerify({ value: web3beta.utils.toWei('3', 'ether') })
+
+    assert.isAbove(web3.eth.getBalance(verify).toNumber(), verifyInitialBalance)
+  })
+
+  it('buyer should send funds to Verify escrow', async function () {
+    var verifyEscrowInitialBalance = web3.eth.getBalance(verifyEscrow).toNumber()
+
+    await purchase.sendFundsToVerify({ value: web3beta.utils.toWei('3', 'ether') })
+
+    assert.isAbove(web3.eth.getBalance(verifyEscrow).toNumber(), verifyEscrowInitialBalance)
+  })
 })

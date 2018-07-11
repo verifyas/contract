@@ -138,11 +138,13 @@ contract Purchase {
         private
         returns (uint amountInDai)
     {
+        return amountInEther;
     }
 
     function toCredToken (uint amountInEther)
         private
         returns (uint amountInCred)
     {
+        return amountInEther;
     }
 }

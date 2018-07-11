@@ -2,6 +2,9 @@
 require('babel-register')
 require('babel-polyfill')
 
+// Allows us to use latest version of web3.
+require('web3')
+
 module.exports = {
   networks: {
     "development": {
