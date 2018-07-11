@@ -42,6 +42,6 @@ To test the smart contracts, follow the below instructions:
  2. Run the command 'truffle develop'. This sets up a local ganache-cli test server equipped with a copy of the Ethereum blockchain for you to run on. It also creates ten test Ethereum accounts, each with 100 test Ether. Their addresses and private keys will be listed after you run the command. You can plug those into the 'deploy_contract' migration file in the 'migrations' folder. Do not end the test server - keep it running.
  3. Open a DIFFERENT command prompt/terminal and navigate into the root directory of the project. It is important that you keep the other command prompt/terminal running.
  4. Run the command 'truffle test'. This does three things:
-   1. Compiles the smart contracts.
-   2. Runs the migrations to deploy the contracts to the network. For testing purposes, we'll use a test network, in this case testrpc. Running on the main Ethereum network would be very slow and expensive.
-   3. Runs the tests against the smart contracts deployed on the network.
+   * Compiles the smart contracts.
+   * Runs the migrations to deploy the contracts to the network. For testing purposes, we'll use a test network, in this case testrpc. Running on the main Ethereum network would be very slow and expensive.
+   * Runs the tests against the smart contracts deployed on the network.
