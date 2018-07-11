@@ -6,9 +6,9 @@ The goal of this project is to provide the smart contract(s) that will be used b
 
 The contracts are stored in the folder marked 'contracts'. In the folder, there are currently two files - one named Migration.sol and one named Purchase.sol. Migration.sol is generated and internally used by Truffle. Purchase.sol is the smart contract currently under development.
 
-The migrations are internally used by Truffle to deploy the contracts to the network.
+The migrations are stored in the folder marked 'migrations'. In the folder, there are currently two files, both of which are numbered. The one marked with the number one is generated and internally used by Truffle. The one marked with the number two is used to deploy the smart contract to the ganache-cli test server.
 
-Unit tests are stored in the folder marked 'tests'. They follow the Truffle testing specification and are run by Truffle.
+The unit tests are stored in the folder marked 'test'. In the folder, there is currently one file - purchase.js. It contains several unit tests to run against the smart contract. The unit tests follow the Truffle testing specification (which is based off of the Mocha testing specification).
 
 # Style Guidelines
 
@@ -30,13 +30,18 @@ A couple important things to note from the guidelines:
 
 # Getting Started
 
+To get started with the project, follow the below instructions:
  1. Download or clone the repository.
  2. Navigate into the root directory of the project.
  3. Run the command 'npm install'
  
 ## Testing
 
-To test the smart contracts, run the command 'truffle test' from the root directory of the project. This does three things:
- 1. Compiles the smart contracts.
- 2. Runs the migrations to deploy the contracts to the network. For testing purposes, we'll use a test network, in this case testrpc. Running on the main Ethereum network would be very slow and expensive.
- 3. Runs the tests against the smart contracts deployed on the network.
+To test the smart contracts, follow the below instructions:
+ 1. Open a command prompt/terminal and navigate into the root directory of the project.
+ 2. Run the command 'truffle develop'. This sets up a local ganache-cli test server equipped with a copy of the Ethereum blockchain for you to run on. It also creates ten test Ethereum accounts, each with 100 test Ether. Their addresses and private keys will be listed after you run the command. You can plug those into the 'deploy_contract' migration file in the 'migrations' folder. Do not end the test server - keep it running.
+ 3. Open a DIFFERENT command prompt/terminal and navigate into the root directory of the project. It is important that you keep the other command prompt/terminal running.
+ 4. Run the command 'truffle test'. This does three things:
+   1. Compiles the smart contracts.
+   2. Runs the migrations to deploy the contracts to the network. For testing purposes, we'll use a test network, in this case testrpc. Running on the main Ethereum network would be very slow and expensive.
+   3. Runs the tests against the smart contracts deployed on the network.
