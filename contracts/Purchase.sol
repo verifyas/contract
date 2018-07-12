@@ -84,18 +84,16 @@ contract Purchase {
         transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
 
-        require(payment > creditCeiling, "Payment <= Credit Ceiling");
         if (payment <= creditCeiling) {
             seller.transfer(payment);
             paid = paid + payment;
         } else {
-            require(creditCeiling <= 0, "Credit Ceiling > 0");
             if (creditCeiling > 0) {
                 seller.transfer(creditCeiling);
                 paid = paid + creditCeiling;
             }
             moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
-            verifyEscrow.send(msg.value);
+            verifyEscrow.transfer(moneyInEscrow);
         }
         return true;
     }
