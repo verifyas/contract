@@ -45,7 +45,7 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
 
     assert.isAbove(web3.eth.getBalance(verify).toNumber(), verifyInitialBalance)
     assert.isBelow(web3.eth.getBalance(buyer).toNumber(), buyerInitialBalance)
-  })*/
+  })
 
   it('buyer should send funds to Verify escrow', async function () {
     var buyerInitialBalance = web3.eth.getBalance(buyer).toNumber()
@@ -66,5 +66,17 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
     
     assert.isAbove(web3.eth.getBalance(seller).toNumber(), sellerInitialBalance)
     assert.isBelow(web3.eth.getBalance(verifyEscrow).toNumber(), verifyEscrowInitialBalance)
+  })*/
+  
+  it('seller should refund funds to buyer', async function () {
+    var sellerInitialBalance = web3.eth.getBalance(seller).toNumber()
+    var buyerInitialBalance = web3.eth.getBalance(buyer).toNumber()
+    
+    await purchase.sendFundsToVerify({ value: web3beta.utils.toWei('3', 'ether'), gas: "220000" })
+    await purchase.sendFundsToSeller({ value: web3beta.utils.toWei('3', 'ether'), from: verifyEscrow, gas: "220000" })
+    await purchase.refundFromSeller({ value: web3beta.utils.toWei('3', 'ether'), from: seller, gas: "220000" })
+    
+    assert.isBelow(web3.eth.getBalance(seller).toNumber(), sellerInitialBalance)
+    assert.isBelow(web3.eth.getBalance(buyer).toNumber(), buyerInitialBalance)
   })
 })
