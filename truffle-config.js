@@ -5,6 +5,9 @@ require('babel-polyfill')
 // Allows us to use latest version of web3.
 require('web3')
 
+// Allows us to use BigInteger
+require('big-integer')
+
 module.exports = {
   networks: {
     "development": {
