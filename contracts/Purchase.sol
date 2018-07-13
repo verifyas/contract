@@ -9,16 +9,22 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
-    uint private creditCeiling = 0;
-    uint private price = 0;
-    uint private paid = 0;
-    uint private moneyInEscrow = 0;
-    uint private collectedEther = 0;
+    uint public creditCeiling = 0;
+    uint public paid = 0;
+    uint public moneyInEscrow = 0;
 
     modifier onlyVerify {
         require(
             msg.sender == verify,
             "Only Verify can call this function."
+        );
+        _;
+    }
+
+    modifier onlyVerifyEscrow {
+        require(
+            msg.sender == verifyEscrow,
+            "Only the escrow account of Verify can call this function."
         );
         _;
     }
@@ -39,21 +45,21 @@ contract Purchase {
         _;
     }
 
-    constructor (address addressSeller, uint p) public payable {
+    // IMPORTANT: Remove the input of addressVerify and addressVerifyEscrow before releasing.
+    // These are included for testing purposes ONLY!
+    constructor (address addressSeller, address addressVerify, address addressVerifyEscrow) public payable {
         buyer = msg.sender;
         seller = addressSeller;
-        price = p;
+        verify = addressVerify; // IMPORTANT: Remove this line and the line below it before releasing - these are included for testing purposes ONLY!
+        verifyEscrow = addressVerifyEscrow;
     }
 
-    function() external payable {
-        collectedEther = SafeMath.add(collectedEther, msg.value); 
+    // Fallback function to accept ETH into contract.
+    function() public payable {
     }
 
-    function collect () external onlyVerify {
-        if (collectedEther > 0) {
-            verify.transfer(collectedEther);
-            collectedEther = 0;
-        }
+    function collect () public onlyVerify {
+        verify.transfer(address(this).balance);
     }
 
     function setCreditCeiling (uint ceiling) external onlyVerify {
@@ -63,14 +69,11 @@ contract Purchase {
     function sendFundsToVerify ()
         public
         payable
+        onlyBuyer
         returns (bool completed)
     {
         uint transactionFee = getTransactionFee();
         uint payment = SafeMath.sub(msg.value, transactionFee);
-
-        if (payment < price) {
-            return false;
-        }
 
         transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
@@ -78,12 +81,12 @@ contract Purchase {
         if (payment <= creditCeiling) {
             seller.transfer(payment);
             paid = paid + payment;
-        } else if (creditCeiling < payment) {
+        } else {
             if (creditCeiling > 0) {
                 seller.transfer(creditCeiling);
                 paid = paid + creditCeiling;
             }
-            moneyInEscrow = moneyInEscrow + toDaiToken(SafeMath.sub(payment, creditCeiling));
+            moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
             verifyEscrow.transfer(moneyInEscrow);
         }
         return true;
@@ -92,7 +95,7 @@ contract Purchase {
     function sendFundsToSeller ()
         public
         payable
-        onlyVerify
+        onlyVerifyEscrow
         returns (bool completed)
     {
         seller.transfer(moneyInEscrow);
@@ -116,7 +119,7 @@ contract Purchase {
     function refundFromVerify ()
         public
         payable
-        onlyVerify
+        onlyVerifyEscrow
         returns (bool completed)
     {
         buyer.transfer(moneyInEscrow);
@@ -138,11 +141,13 @@ contract Purchase {
         private
         returns (uint amountInDai)
     {
+        return amountInEther;
     }
 
     function toCredToken (uint amountInEther)
         private
         returns (uint amountInCred)
     {
+        return amountInEther;
     }
 }

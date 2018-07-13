@@ -20,8 +20,12 @@
   },
   "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme",
   "dependencies": {
-    "ethereumjs-testrpc": "^6.0.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "big-integer": "^1.6.32",
+    "ganache-cli": "^6.1.6",
     "openzeppelin-solidity": "1.10.0",
-    "solc": "^0.4.24"
+    "solc": "^0.4.24",
+    "web3": "^1.0.0-beta.34"
   }
 }
