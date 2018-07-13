@@ -45,3 +45,7 @@ To test the smart contracts, follow the below instructions:
    * Compiles the smart contracts.
    * Runs the migrations to deploy the contracts to the network. For testing purposes, we'll use a test network, in this case testrpc. Running on the main Ethereum network would be very slow and expensive.
    * Runs the tests against the smart contracts deployed on the network.
+
+## Contact
+
+If you need any help getting the smart contracts running on your computer, feel free to send a message to Richard Grannis-Vu on Basecamp or an email to rickygv@stanford.edu.
