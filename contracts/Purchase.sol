@@ -9,10 +9,9 @@ contract Purchase {
     address public seller;
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
-    uint private creditCeiling = 0;
-    uint private price = 0;
-    uint private paid = 0;
-    uint private moneyInEscrow = 0;
+    uint public creditCeiling = 0;
+    uint public paid = 0;
+    uint public moneyInEscrow = 0;
 
     modifier onlyVerify {
         require(
@@ -48,10 +47,9 @@ contract Purchase {
 
     // IMPORTANT: Remove the input of addressVerify and addressVerifyEscrow before releasing.
     // These are included for testing purposes ONLY!
-    constructor (address addressSeller, uint p, address addressVerify, address addressVerifyEscrow) public payable {
+    constructor (address addressSeller, address addressVerify, address addressVerifyEscrow) public payable {
         buyer = msg.sender;
         seller = addressSeller;
-        price = p;
         verify = addressVerify; // IMPORTANT: Remove this line and the line below it before releasing - these are included for testing purposes ONLY!
         verifyEscrow = addressVerifyEscrow;
     }
@@ -76,10 +74,6 @@ contract Purchase {
     {
         uint transactionFee = getTransactionFee();
         uint payment = SafeMath.sub(msg.value, transactionFee);
-
-        if (payment < price) {
-            return false;
-        }
 
         transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
