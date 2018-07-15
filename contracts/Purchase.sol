@@ -12,14 +12,6 @@ contract Purchase {
     uint public creditCeiling = 0;
     uint public moneyInEscrow = 0;
 
-    modifier onlyVerify {
-        require(
-            msg.sender == verify,
-            "Only Verify can call this function."
-        );
-        _;
-    }
-
     modifier onlyVerifyEscrow {
         require(
             msg.sender == verifyEscrow,
@@ -49,11 +41,11 @@ contract Purchase {
     function() public payable {
     }
 
-    function collect () public onlyVerify {
+    function collect () public onlyVerifyEscrow {
         verify.transfer(address(this).balance);
     }
 
-    function setCreditCeiling (uint ceiling) external onlyVerify {
+    function setCreditCeiling (uint ceiling) external onlyVerifyEscrow {
         creditCeiling = ceiling;
     }
 
