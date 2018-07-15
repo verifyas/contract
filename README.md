@@ -1,6 +1,6 @@
 # About this project
 
-The goal of this project is to provide the smart contract(s) that will be used by the buyer, the seller, and Verify in order to conduct the transactions for the Ethereum whitepaper project. This includes sending the funds to Verify, converting 1% of the funds to the Verify CRED token and storing it in the Verify account, converting 99% of the funds to the Dai stablecoin and storing it in the Verify escrow account, sending the funds stored in escrow to the seller, and allowing for refunds (in some fashion), in which case Verify refunds any money in the escrow account that hasn't been given to the seller yet.
+The goal of this project is to provide the smart contract that will be used by the buyer, the seller, and Verify in order to conduct the transactions for the Ethereum whitepaper project. This includes sending the funds to Verify, converting 1% of the funds to the Verify CRED token and storing it in the Verify account, converting 99% of the funds to the Dai stablecoin and storing it in the Verify escrow account, sending the funds stored in escrow to the seller, and allowing for refunds (in some fashion), in which case Verify refunds any money in the escrow account that hasn't been given to the seller yet.
 
 # Code Structure
 
