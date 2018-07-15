@@ -10,7 +10,6 @@ contract Purchase {
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
     uint public creditCeiling = 0;
-    uint public paid = 0;
     uint public moneyInEscrow = 0;
 
     modifier onlyVerify {
@@ -33,14 +32,6 @@ contract Purchase {
         require(
             msg.sender == buyer,
             "Only the buyer can call this function."
-        );
-        _;
-    }
-
-    modifier onlySeller {
-        require(
-            msg.sender == seller,
-            "Only the seller can call this function."
         );
         _;
     }
@@ -80,11 +71,9 @@ contract Purchase {
 
         if (payment <= creditCeiling) {
             seller.transfer(payment);
-            paid = paid + payment;
         } else {
             if (creditCeiling > 0) {
                 seller.transfer(creditCeiling);
-                paid = paid + creditCeiling;
             }
             moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
             verifyEscrow.transfer(moneyInEscrow);
@@ -99,20 +88,7 @@ contract Purchase {
         returns (bool completed)
     {
         seller.transfer(moneyInEscrow);
-        paid = paid + moneyInEscrow;
         moneyInEscrow = 0;
-        return true;
-    }
-
-    // Note: Transaction fee is non-refundable.
-    function refundFromSeller ()
-        public
-        payable
-        onlySeller
-        returns (bool completed)
-    {
-        buyer.transfer(paid);
-        paid = 0;
         return true;
     }
 
