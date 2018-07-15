@@ -59,31 +59,31 @@ contract Purchase {
                 seller.transfer(creditCeiling);
             }
             moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
+
             verifyEscrow.transfer(moneyInEscrow);
         }
-        return true;
     }
 
     function sendFundsToSeller ()
         public
         payable
         onlyVerifyEscrow
-        returns (bool completed)
     {
-        seller.transfer(moneyInEscrow);
+        uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
-        return true;
+
+        seller.transfer(moneyTransfer);
     }
 
     function refundFromVerify ()
         public
         payable
         onlyVerifyEscrow
-        returns (bool completed)
     {
-        buyer.transfer(moneyInEscrow);
+        uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
-        return true;
+
+        buyer.transfer(moneyTransfer);
     }
 
     // Note: For v1, we will only take 1% of the transaction as 'insurance' fee.
