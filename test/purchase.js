@@ -27,7 +27,7 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
     var verifyInitialBalance = web3.eth.getBalance(verify) * 1
 
     await purchase.sendTransaction({ value: 1e+18, from: donor })
-    await purchase.collect({ from: verify })
+    await purchase.collect({ from: verifyEscrow })
 
     assert.equal(web3.eth.getBalance(await purchase.address) * 1, 0)
     assert.isAbove(web3.eth.getBalance(verify) * 1, verifyInitialBalance)
@@ -65,24 +65,6 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
 
     assert.ok(bigInt(web3.eth.getBalance(seller) * 1).greater(sellerInitialBalance))
     assert.ok(bigInt(web3.eth.getBalance(verifyEscrow)).add(gasCost).equals(verifyEscrowInitialBalance))
-  })
-
-  it('seller should refund funds to buyer', async () => {
-    var sellerInitialBalance = await web3.eth.getBalance(seller) * 1
-    var buyerInitialBalance = await web3.eth.getBalance(buyer) * 1
-    var transactionFee = web3beta.utils.toWei('3', 'ether') / 100
-
-    var resultBuyer = await purchase.sendFundsToVerify({ value: web3beta.utils.toWei('3', 'ether'), gas: "2200000" })
-    await purchase.sendFundsToSeller({ value: await purchase.moneyInEscrow(), from: verifyEscrow, gas: "2200000" })
-    var resultSeller = await purchase.refundFromSeller({ value: await purchase.paid(), from: seller, gas: "2200000" })
-
-    var transactionBuyer = await web3.eth.getTransaction(resultBuyer.tx)
-    var gasCostBuyer = transactionBuyer.gasPrice.mul(resultBuyer.receipt.gasUsed)
-    var transactionSeller = await web3.eth.getTransaction(resultSeller.tx)
-    var gasCostSeller = transactionSeller.gasPrice.mul(resultSeller.receipt.gasUsed)
-
-    assert.ok(bigInt(web3.eth.getBalance(seller)).add(gasCostSeller).equals(sellerInitialBalance))
-    assert.ok(bigInt(web3.eth.getBalance(buyer)).add(transactionFee).add(gasCostBuyer).equals(buyerInitialBalance))
   })
   
   it('Verify escrow should refund funds to buyer', async () => {

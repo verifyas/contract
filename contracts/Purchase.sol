@@ -10,37 +10,12 @@ contract Purchase {
     address public verify; // TODO: Set to Verify Ethereum address
     address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
     uint public creditCeiling = 0;
-    uint public paid = 0;
     uint public moneyInEscrow = 0;
-
-    modifier onlyVerify {
-        require(
-            msg.sender == verify,
-            "Only Verify can call this function."
-        );
-        _;
-    }
 
     modifier onlyVerifyEscrow {
         require(
             msg.sender == verifyEscrow,
             "Only the escrow account of Verify can call this function."
-        );
-        _;
-    }
-
-    modifier onlyBuyer {
-        require(
-            msg.sender == buyer,
-            "Only the buyer can call this function."
-        );
-        _;
-    }
-
-    modifier onlySeller {
-        require(
-            msg.sender == seller,
-            "Only the seller can call this function."
         );
         _;
     }
@@ -58,18 +33,18 @@ contract Purchase {
     function() public payable {
     }
 
-    function collect () public onlyVerify {
+    function collect () public onlyVerifyEscrow {
         verify.transfer(address(this).balance);
     }
 
-    function setCreditCeiling (uint ceiling) external onlyVerify {
+    function setCreditCeiling (uint ceiling) external onlyVerifyEscrow {
         creditCeiling = ceiling;
     }
 
     function sendFundsToVerify ()
         public
         payable
-        onlyBuyer
+        returns (bool completed)
     {
         uint transactionFee = getTransactionFee();
         uint payment = SafeMath.sub(msg.value, transactionFee);
@@ -78,13 +53,9 @@ contract Purchase {
         verify.transfer(transactionFee);
 
         if (payment <= creditCeiling) {
-            paid = paid + payment;
-
             seller.transfer(payment);
         } else {
             if (creditCeiling > 0) {
-                paid = paid + creditCeiling;
-
                 seller.transfer(creditCeiling);
             }
             moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
@@ -99,22 +70,9 @@ contract Purchase {
         onlyVerifyEscrow
     {
         uint moneyTransfer = moneyInEscrow;
-        paid = paid + moneyInEscrow;
         moneyInEscrow = 0;
 
         seller.transfer(moneyTransfer);
-    }
-
-    // Note: Transaction fee is non-refundable.
-    function refundFromSeller ()
-        public
-        payable
-        onlySeller
-    {
-        uint moneyTransfer = paid;
-        paid = 0;
-
-        buyer.transfer(moneyTransfer);
     }
 
     function refundFromVerify ()
