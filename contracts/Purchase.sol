@@ -20,14 +20,6 @@ contract Purchase {
         _;
     }
 
-    modifier onlyBuyer {
-        require(
-            msg.sender == buyer,
-            "Only the buyer can call this function."
-        );
-        _;
-    }
-
     // IMPORTANT: Remove the input of addressVerify and addressVerifyEscrow before releasing.
     // These are included for testing purposes ONLY!
     constructor (address addressSeller, address addressVerify, address addressVerifyEscrow) public payable {
@@ -52,7 +44,6 @@ contract Purchase {
     function sendFundsToVerify ()
         public
         payable
-        onlyBuyer
         returns (bool completed)
     {
         uint transactionFee = getTransactionFee();
