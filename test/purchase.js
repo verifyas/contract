@@ -27,7 +27,7 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
     var verifyInitialBalance = web3.eth.getBalance(verify) * 1
 
     await purchase.sendTransaction({ value: 1e+18, from: donor })
-    await purchase.collect({ from: verify })
+    await purchase.collect({ from: verifyEscrow })
 
     assert.equal(web3.eth.getBalance(await purchase.address) * 1, 0)
     assert.isAbove(web3.eth.getBalance(verify) * 1, verifyInitialBalance)
