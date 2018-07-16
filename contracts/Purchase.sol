@@ -33,10 +33,6 @@ contract Purchase {
     function() public payable {
     }
 
-    function collect () public onlyVerifyEscrow {
-        verify.transfer(address(this).balance);
-    }
-
     function setCreditCeiling (uint ceiling) external onlyVerifyEscrow {
         creditCeiling = ceiling;
     }
@@ -46,7 +42,7 @@ contract Purchase {
         payable
         returns (bool completed)
     {
-        uint transactionFee = getTransactionFee();
+        uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = SafeMath.sub(msg.value, transactionFee);
 
         transactionFee = toCredToken(transactionFee);
@@ -84,16 +80,6 @@ contract Purchase {
         moneyInEscrow = 0;
 
         buyer.transfer(moneyTransfer);
-    }
-
-    // Note: For v1, we will only take 1% of the transaction as 'insurance' fee.
-    // In the future, we will use an algorithm to calculate the 'insurance' fee,
-    // taking into account the reputation of both parties involved.
-    function getTransactionFee ()
-        private
-        returns (uint transactionFee)
-    {
-        return SafeMath.div(msg.value, 100);
     }
 
     function toDaiToken (uint amountInEther)
