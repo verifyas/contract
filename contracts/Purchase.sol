@@ -43,7 +43,7 @@ contract Purchase {
         returns (bool completed)
     {
         uint transactionFee = SafeMath.div(msg.value, 100);
-        uint payment = SafeMath.sub(msg.value, transactionFee);
+        uint payment = msg.value - transactionFee;
 
         transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
@@ -54,7 +54,7 @@ contract Purchase {
             if (creditCeiling > 0) {
                 seller.transfer(creditCeiling);
             }
-            moneyInEscrow = moneyInEscrow + toDaiToken(payment - creditCeiling);
+            moneyInEscrow = SafeMath.add(moneyInEscrow, toDaiToken(payment - creditCeiling));
 
             verifyEscrow.transfer(moneyInEscrow);
         }
