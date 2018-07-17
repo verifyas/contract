@@ -32,10 +32,7 @@ contract Purchase {
         creditCeiling = ceiling;
     }
 
-    function sendFundsToVerify ()
-        public
-        payable
-    {
+    function sendFundsToVerify () public payable {
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
 
@@ -54,22 +51,14 @@ contract Purchase {
         }
     }
 
-    function sendFundsToSeller ()
-        public
-        payable
-        onlyVerifyEscrow
-    {
+    function sendFundsToSeller () public payable onlyVerifyEscrow {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
         seller.transfer(moneyTransfer);
     }
 
-    function refundFromVerify ()
-        public
-        payable
-        onlyVerifyEscrow
-    {
+    function refundFromVerify () public payable onlyVerifyEscrow {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
