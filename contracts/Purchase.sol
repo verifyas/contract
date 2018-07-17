@@ -35,7 +35,6 @@ contract Purchase {
     function sendFundsToVerify ()
         public
         payable
-        returns (bool completed)
     {
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
