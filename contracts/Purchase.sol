@@ -6,8 +6,8 @@ contract Purchase {
 
     address public buyer;
     address public seller;
-    address public verify = 0xc5fdf4076b8f3a5357c5e395ab970b5b54098fef;
-    address public verifyEscrow = 0x821aea9a577a9b44299b9c15c88cf3087f3b5544;
+    address public verify = 0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef;
+    address public verifyEscrow = 0x821aEa9a577a9b44299B9c15c88cf3087F3b5544;
     uint public creditCeiling = 0;
     uint public moneyInEscrow = 0;
 
