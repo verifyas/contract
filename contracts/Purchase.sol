@@ -1,14 +1,13 @@
 pragma solidity ^0.4.22;
 
-//import 'https://github.com/verifyas/contract/contracts/CREDToken.sol';
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract Purchase {
 
     address public buyer;
     address public seller;
-    address public verify; // TODO: Set to Verify Ethereum address
-    address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
+    address public verify = "0xc5fdf4076b8f3a5357c5e395ab970b5b54098fef";
+    address public verifyEscrow = "0x821aea9a577a9b44299b9c15c88cf3087f3b5544";
     uint public creditCeiling = 0;
     uint public moneyInEscrow = 0;
 
@@ -20,13 +19,9 @@ contract Purchase {
         _;
     }
 
-    // IMPORTANT: Remove the input of addressVerify and addressVerifyEscrow before releasing.
-    // These are included for testing purposes ONLY!
-    constructor (address addressSeller, address addressVerify, address addressVerifyEscrow) public payable {
+    constructor (address addressSeller) public payable {
         buyer = msg.sender;
         seller = addressSeller;
-        verify = addressVerify; // IMPORTANT: Remove this line and the line below it before releasing - these are included for testing purposes ONLY!
-        verifyEscrow = addressVerifyEscrow;
     }
 
     // Fallback function to accept ETH into contract.
