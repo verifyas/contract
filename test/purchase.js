@@ -10,7 +10,7 @@ contract('Purchase', function ([buyer, seller, verify, verifyEscrow, donor]) {
   var purchase
 
   beforeEach('setup contract for each test', async function () {
-    purchase = await Purchase.new(seller, verify, verifyEscrow)
+    purchase = await Purchase.new(seller)
   })
 
   it('has a buyer', async () => {

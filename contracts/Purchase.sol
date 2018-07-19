@@ -1,14 +1,13 @@
 pragma solidity ^0.4.22;
 
-//import 'https://github.com/verifyas/contract/contracts/CREDToken.sol';
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract Purchase {
 
     address public buyer;
     address public seller;
-    address public verify; // TODO: Set to Verify Ethereum address
-    address public verifyEscrow; // TODO: Set to Verify Escrow Account Ethereum Address
+    address public verify = 0x848a4a97B22CD1c447C322Bfc94d2910677367ec;
+    address public verifyEscrow = 0xE41F2AF5603b376E9dF9f3e0763A0E568530Ee7b;
     uint public creditCeiling = 0;
     uint public moneyInEscrow = 0;
 
@@ -20,13 +19,9 @@ contract Purchase {
         _;
     }
 
-    // IMPORTANT: Remove the input of addressVerify and addressVerifyEscrow before releasing.
-    // These are included for testing purposes ONLY!
-    constructor (address addressSeller, address addressVerify, address addressVerifyEscrow) public payable {
+    constructor (address addressSeller) public payable {
         buyer = msg.sender;
         seller = addressSeller;
-        verify = addressVerify; // IMPORTANT: Remove this line and the line below it before releasing - these are included for testing purposes ONLY!
-        verifyEscrow = addressVerifyEscrow;
     }
 
     // Fallback function to accept ETH into contract.
@@ -37,11 +32,7 @@ contract Purchase {
         creditCeiling = ceiling;
     }
 
-    function sendFundsToVerify ()
-        public
-        payable
-        returns (bool completed)
-    {
+    function sendFundsToVerify () public payable {
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
 
@@ -60,22 +51,14 @@ contract Purchase {
         }
     }
 
-    function sendFundsToSeller ()
-        public
-        payable
-        onlyVerifyEscrow
-    {
+    function sendFundsToSeller () public payable onlyVerifyEscrow {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
         seller.transfer(moneyTransfer);
     }
 
-    function refundFromVerify ()
-        public
-        payable
-        onlyVerifyEscrow
-    {
+    function refundFromVerify () public payable onlyVerifyEscrow {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
