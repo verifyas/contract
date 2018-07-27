@@ -36,7 +36,6 @@ contract Purchase {
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
 
-        transactionFee = toCredToken(transactionFee);
         verify.transfer(transactionFee);
 
         if (payment <= creditCeiling) {
@@ -45,7 +44,7 @@ contract Purchase {
             if (creditCeiling > 0) {
                 seller.transfer(creditCeiling);
             }
-            moneyInEscrow = SafeMath.add(moneyInEscrow, toDaiToken(payment - creditCeiling));
+            moneyInEscrow = SafeMath.add(moneyInEscrow, payment - creditCeiling);
 
             verifyEscrow.transfer(moneyInEscrow);
         }
@@ -63,19 +62,5 @@ contract Purchase {
         moneyInEscrow = 0;
 
         buyer.transfer(moneyTransfer);
-    }
-
-    function toDaiToken (uint amountInEther)
-        private
-        returns (uint amountInDai)
-    {
-        return amountInEther;
-    }
-
-    function toCredToken (uint amountInEther)
-        private
-        returns (uint amountInCred)
-    {
-        return amountInEther;
     }
 }
