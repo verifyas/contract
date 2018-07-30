@@ -32,6 +32,10 @@ contract Purchase {
         creditCeiling = ceiling;
     }
 
+    function toDaiStablecoin (uint moneyInDai) external onlyVerifyEscrow {
+        moneyInEscrow = moneyInDai;
+    }
+
     function sendFundsToVerify () public payable {
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
