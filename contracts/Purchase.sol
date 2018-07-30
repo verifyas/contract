@@ -1,6 +1,7 @@
 pragma solidity ^0.4.22;
 
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
+import 'https://github.com/bancorprotocol/contracts/blob/master/solidity/contracts/converter/BancorConverter.sol';
 
 contract Purchase {
 
@@ -32,10 +33,6 @@ contract Purchase {
         creditCeiling = ceiling;
     }
 
-    function toDaiStablecoin (uint moneyInDai) external onlyVerifyEscrow {
-        moneyInEscrow = moneyInDai;
-    }
-
     function sendFundsToVerify () public payable {
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
@@ -50,7 +47,10 @@ contract Purchase {
             }
             moneyInEscrow = SafeMath.add(moneyInEscrow, payment - creditCeiling);
 
-            verifyEscrow.transfer(moneyInEscrow);
+            moneyInEscrow = toDaiStablecoin(moneyInEscrow);
+
+            EIP20 dai = EIP20(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
+            dai.transfer(verifyEscrow, moneyInEscrow);
         }
     }
 
@@ -58,13 +58,22 @@ contract Purchase {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
-        seller.transfer(moneyTransfer);
+        EIP20 dai = EIP20(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
+        dai.transfer(seller, moneyTransfer);
     }
 
     function refundFromVerify () public payable onlyVerifyEscrow {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
-        buyer.transfer(moneyTransfer);
+        EIP20 dai = EIP20(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
+        dai.transfer(buyer, moneyTransfer);
+    }
+
+    function toDaiStablecoin (uint amountInEth)
+      private
+      returns (uint amountInDai)
+    {
+        return convert(0xc0829421c1d260bd3cb3e0f06cfe2d52db2ce315, 0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359, amountInEth, 0);
     }
 }
