@@ -1,14 +1,7 @@
 pragma solidity ^0.4.22;
 
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
-import 'https://github.com/bancorprotocol/contracts/blob/master/solidity/contracts/converter/BancorConverter.sol';
-
-contract ERC20Token {
-
-  function approve(address spender, uint value);
-  function transferFrom(address from, address to, uint value);
-
-}
+//import 'https://github.com/bancorprotocol/contracts/blob/master/solidity/contracts/converter/BancorConverter.sol';
 
 contract Purchase {
 
@@ -79,10 +72,10 @@ contract Purchase {
         dai.transferFrom(verifyEscrow, buyer, moneyTransfer);
     }
 
-    function toDaiStablecoin (uint amountInEth)
+    /*function toDaiStablecoin (uint amountInEth)
       private
       returns (uint amountInDai)
     {
         return convert(0xc0829421c1d260bd3cb3e0f06cfe2d52db2ce315, 0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359, amountInEth, 0);
-    }
+    }*/
 }
