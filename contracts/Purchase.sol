@@ -1,5 +1,6 @@
 pragma solidity ^0.4.22;
 
+import '../contracts/ERC20Token.sol';
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 //import 'https://github.com/bancorprotocol/contracts/blob/master/solidity/contracts/converter/BancorConverter.sol';
 
