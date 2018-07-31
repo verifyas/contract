@@ -11,6 +11,7 @@ contract Purchase {
     address public verifyEscrow = 0xE41F2AF5603b376E9dF9f3e0763A0E568530Ee7b;
     uint public creditCeiling = 0;
     uint public moneyInEscrow = 0;
+    ERC20Token public dai;
 
     modifier onlyVerifyEscrow {
         require(
@@ -23,6 +24,7 @@ contract Purchase {
     constructor (address addressSeller) public payable {
         buyer = msg.sender;
         seller = addressSeller;
+        dai = ERC20Token(0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359);
     }
 
     // Fallback function to accept ETH into contract.
@@ -49,7 +51,6 @@ contract Purchase {
 
             //moneyInEscrow = toDaiStablecoin(moneyInEscrow);
 
-            ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
             dai.transfer(verifyEscrow, moneyInEscrow);
         }
     }
@@ -58,7 +59,6 @@ contract Purchase {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
-        ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
         dai.transfer(seller, moneyTransfer);
     }
 
@@ -66,7 +66,6 @@ contract Purchase {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
-        ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
         dai.transfer(buyer, moneyTransfer);
     }
 
