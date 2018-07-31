@@ -59,8 +59,7 @@ contract Purchase {
         moneyInEscrow = 0;
 
         ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
-        dai.approve(address(this), moneyTransfer);
-        dai.transferFrom(verifyEscrow, seller, moneyTransfer);
+        dai.transfer(seller, moneyTransfer);
     }
 
     function refundFromVerify () public payable onlyVerifyEscrow {
@@ -68,8 +67,7 @@ contract Purchase {
         moneyInEscrow = 0;
 
         ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
-        dai.approve(address(this), moneyTransfer);
-        dai.transferFrom(verifyEscrow, buyer, moneyTransfer);
+        dai.transfer(buyer, moneyTransfer);
     }
 
     /*function toDaiStablecoin (uint amountInEth)
