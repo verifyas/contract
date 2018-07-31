@@ -3,6 +3,13 @@ pragma solidity ^0.4.22;
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 import 'https://github.com/bancorprotocol/contracts/blob/master/solidity/contracts/converter/BancorConverter.sol';
 
+contract ERC20Token {
+
+  function approve(address spender, uint value);
+  function transferFrom(address from, address to, uint value);
+
+}
+
 contract Purchase {
 
     address public buyer;
@@ -47,9 +54,9 @@ contract Purchase {
             }
             moneyInEscrow = SafeMath.add(moneyInEscrow, payment - creditCeiling);
 
-            moneyInEscrow = toDaiStablecoin(moneyInEscrow);
+            //moneyInEscrow = toDaiStablecoin(moneyInEscrow);
 
-            EIP20 dai = EIP20(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
+            ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
             dai.transfer(verifyEscrow, moneyInEscrow);
         }
     }
@@ -58,16 +65,18 @@ contract Purchase {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
-        EIP20 dai = EIP20(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
-        dai.transfer(seller, moneyTransfer);
+        ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
+        dai.approve(address(this), moneyTransfer);
+        dai.transferFrom(verifyEscrow, seller, moneyTransfer);
     }
 
     function refundFromVerify () public payable onlyVerifyEscrow {
         uint moneyTransfer = moneyInEscrow;
         moneyInEscrow = 0;
 
-        EIP20 dai = EIP20(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
-        dai.transfer(buyer, moneyTransfer);
+        ERC20Token dai = ERC20Token(0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359);
+        dai.approve(address(this), moneyTransfer);
+        dai.transferFrom(verifyEscrow, buyer, moneyTransfer);
     }
 
     function toDaiStablecoin (uint amountInEth)
