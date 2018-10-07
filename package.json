@@ -1,0 +1,32 @@
+{
+  "name": "ethereum-smart-contract",
+  "version": "1.0.0",
+  "description": "Smart contracts for the Ethereum whitepaper project.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/verifyas/ethereum-smart-contract.git"
+  },
+  "author": "Richard Grannis-Vu, Hassan Fahmy, Kivalu Ramanlal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/verifyas/ethereum-smart-contract/issues"
+  },
+  "homepage": "https://github.com/verifyas/ethereum-smart-contract#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "big-integer": "^1.6.32",
+    "ganache-cli": "^6.1.6",
+    "openzeppelin-solidity": "1.10.0",
+    "run-with-testrpc": "^0.3.0",
+    "solc": "^0.4.24",
+    "web3": "^1.0.0-beta.34"
+  }
+}
