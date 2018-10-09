@@ -1,5 +1,7 @@
 # Verify Smart Contracts
 
+> Contract deployed on Ropsten at the following address: [0xf2A75E39C773CEc4C193790678dCf80875d67840](https://ropsten.etherscan.io/address/0xf2A75E39C773CEc4C193790678dCf80875d67840)
+
 The goal of this project is to provide the smart contract that will be used by the buyer, the seller, and Verify in order to conduct the transactions described in the [Verify whitepaper](https://token.verify.as/files/whitepaper.pdf). This includes sending the funds to Verify, converting 1% of the funds to [CRED](https://coinmarketcap.com/currencies/verify) and storing it in the Verify account, converting the remaining 99% to the Dai stablecoin and storing it in the Verify escrow account, sending the funds stored in escrow to the seller, and allowing for refunds (in some fashion), in which case Verify refunds any money in the escrow account that hasn't been given to the seller yet.
 
 1. [Getting Started](#getting-started)
