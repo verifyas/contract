@@ -3,84 +3,82 @@ pragma solidity ^0.4.22;
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract Purchase {
+    address public owner;
+    // This wallet receives the transaction fees:
+    address public verifyWallet = 0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef;
+    
+    // Tracks combination of (txId, amount, buyer, seller)
+    uint256 public curIndex = 0;
+    mapping(uint256 => uint256) public amounts;
+    mapping(uint256 => address) public buyers;
+    mapping(uint256 => address) public sellers;
 
-    address public buyer;
-    address public seller;
-    address public verify = 0x848a4a97B22CD1c447C322Bfc94d2910677367ec;
-    address public verifyEscrow = 0xE41F2AF5603b376E9dF9f3e0763A0E568530Ee7b;
-    uint public creditCeiling = 0;
-    uint public moneyInEscrow = 0;
-
-    modifier onlyVerifyEscrow {
+    modifier onlyOwner {
         require(
-            msg.sender == verifyEscrow,
-            "Only the Verify escrow account can call this function."
+            msg.sender == owner,
+            "Only Verify can call this function."
         );
         _;
     }
 
-    constructor (address addressSeller) public payable {
-        buyer = msg.sender;
-        seller = addressSeller;
+    constructor () public payable {
+        owner = msg.sender;
     }
 
     // Fallback function to accept ETH into contract.
     function() public payable {
     }
 
-    function setCreditCeiling (uint ceiling) external onlyVerifyEscrow {
-        creditCeiling = ceiling;
-    }
-
-    function sendFundsToVerify () public payable {
+    function receiveFunds(address seller) public payable {
+        require(msg.value > 0, "You must send some ETH to this method");
+        
+        // Deduct transaction fee in CRED
         uint transactionFee = SafeMath.div(msg.value, 100);
         uint payment = msg.value - transactionFee;
-
         transactionFee = toCredToken(transactionFee);
-        verify.transfer(transactionFee);
+        verifyWallet.transfer(transactionFee);
 
-        if (payment <= creditCeiling) {
-            seller.transfer(payment);
-        } else {
-            if (creditCeiling > 0) {
-                seller.transfer(creditCeiling);
-            }
-            moneyInEscrow = SafeMath.add(moneyInEscrow, toDaiToken(payment - creditCeiling));
-
-            verifyEscrow.transfer(moneyInEscrow);
-        }
+        // Store transaction
+        amounts[curIndex] = SafeMath.add(amounts[curIndex], payment);    
+        buyers[curIndex] = msg.sender;
+        sellers[curIndex] = seller;
+        curIndex = curIndex + 1;
     }
 
-    function sendFundsToSeller () public payable onlyVerifyEscrow {
-        uint moneyTransfer = moneyInEscrow;
-        moneyInEscrow = 0;
-
-        seller.transfer(moneyTransfer);
+    function completeTransaction (uint256 txIndex) public onlyOwner {
+        uint256 amount = amounts[txIndex];
+        amounts[txIndex] = 0;
+        
+        sellers[txIndex].transfer(amount);
     }
 
-    function refundFromVerify () public payable onlyVerifyEscrow {
-        uint moneyTransfer = moneyInEscrow;
-        moneyInEscrow = 0;
-
-        buyer.transfer(moneyTransfer);
+    function refundTransaction (uint256 txIndex) public onlyOwner {
+        uint256 amount = amounts[txIndex];
+        amounts[txIndex] = 0;
+        
+        buyers[txIndex].transfer(amount);
     }
 
-    function toDaiToken (uint amountInEther)
+    function toDaiToken (uint amountInEther) pure
         private
         returns (uint amountInDai)
     {
-        /* Bancor doesn't support conversion to DAI on Ropsten 
-           See: https://goo.gl/cQkrvL */
+        /**
+         * Bancor does not support conversion to DAI on Ropsten
+         * See: https://goo.gl/cQkrvL 
+         **/
         return amountInEther;
     }
 
-    function toCredToken (uint amountInEther)
+    function toCredToken (uint amountInEther) pure
         private
         returns (uint amountInCred)
     {
-        /* ETH to CRED conversion takes place external to this 
-           smart contract through a batch-conversion script
-           that runs regularly */
+        /** 
+         * ETH to CRED conversion takes place external to this 
+         * smart contract through a batch-conversion script
+         * that runs regularly 
+         **/
         return amountInEther;
     }
 }
