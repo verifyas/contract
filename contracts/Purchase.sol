@@ -5,7 +5,7 @@ import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 contract Purchase {
     address public owner;
     // This wallet receives the transaction fees:
-    address public verifyWallet = 0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef;
+    address public verifyWallet;
     
     // Tracks combination of (txId, amount, buyer, seller)
     uint256 public curIndex = 0;
@@ -23,6 +23,12 @@ contract Purchase {
 
     constructor () public payable {
         owner = msg.sender;
+        verifyWallet = msg.sender;
+    }
+
+    // Sets the destination wallet for transaction fees
+    function setVerifyWallet(address newWallet) public onlyOwner {
+        verifyWallet = newWallet;
     }
 
     // Fallback function to accept ETH into contract.
