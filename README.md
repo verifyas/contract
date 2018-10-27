@@ -54,8 +54,3 @@ A couple of important things to note from the guidelines:
 # Support
 
 If you need any help getting the smart contracts running on your computer, feel free to open an issue or contact us at [team@verify.as](mailto:team@verify.as). 
-
-This project is made possible thanks to contributions made by:
-
-- [Alirhayim, Yazin](https://github.com/yazinsai)
-- [Grannis-Vu, Richard](https://github.com/rickygv99)
